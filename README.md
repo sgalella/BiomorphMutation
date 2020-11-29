@@ -1,5 +1,5 @@
 # Biomorph Mutation
-Implementation of the algorithm to generate biomorphs described by Richard Dawkins in [The Evolution of Evolvability](https://richarddawkins.net/wp-content/uploads/2014/06/Evolution-of-Evolvability.pdf). Biomorphs are created randomly over time, without selection.
+Implementation of the algorithm to generate biomorphs described by Richard Dawkins in [The Evolution of Evolvability](https://richarddawkins.net/wp-content/uploads/2014/06/Evolution-of-Evolvability.pdf). An initial biomorph is created with length of 1. Each generation consists of a random mutation in one of the nine different genes of the biomorph. Genes control the angles and length of the strokes. No selection of any kind is applied. 
 
 <p align="center">
     <img width="400" height="400" src="images/biomorphs.gif">
