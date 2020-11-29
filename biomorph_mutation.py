@@ -77,11 +77,11 @@ def mutate_gene(gene):
 
 
 def main():
-    np.random.seed(123)
-    if os.path.isdir('images'):
-        shutil.rmtree('images')
-    os.mkdir('images')
-    num_generations = 300
+    np.random.seed(4321)
+    if os.path.isdir('biomorphs'):
+        shutil.rmtree('biomorphs')
+    os.mkdir('biomorphs')
+    num_generations = 1000
     gene = initialize_random_gene()
     length, dx, dy = gene_to_phenotype(gene)
 
@@ -90,7 +90,7 @@ def main():
     show_phenotype(X, Y, length, DIR, dx, dy, ax)
     ax.set_title('Generation 0')
     plt.axis('off')
-    f.savefig(f'images/{0:04d}.png')
+    f.savefig(f'biomorphs/{0:04d}.png')
     
     for i in tqdm(range(1, num_generations + 1)):
         ax.cla()
@@ -99,7 +99,7 @@ def main():
         show_phenotype(X, Y, length, DIR, dx, dy, ax)
         ax.set_title(f'Generation {i}')
         plt.axis('off')
-        f.savefig(f'images/{i:04d}.png')
+        f.savefig(f'biomorphs/{i:04d}.png')
 
 
 if __name__ == '__main__':
