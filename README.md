@@ -1,6 +1,10 @@
 # Biomorph Mutation
 Implementation of the algorithm to generate biomorphs described by Richard Dawkins in [The Evolution of Evolvability](https://richarddawkins.net/wp-content/uploads/2014/06/Evolution-of-Evolvability.pdf). Biomorphs are created randomly over time, without selection.
 
+<p align="center">
+    <img width="400" height="400" src="images/biomorphs.gif">
+</p>
+
 
 
 ## Installation
