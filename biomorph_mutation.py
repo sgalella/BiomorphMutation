@@ -13,7 +13,19 @@ X = 0
 Y = 0
 
 
-def show_phenotype(x, y, length, d, dx, dy, ax):
+def show_phenotype(ax, x, y, length, d, dx, dy):
+    """
+    Displays the phenotype of the individual.
+
+    Args:
+        ax (matplotlib.axes): Figure axis to display the phenotype.
+        x (int): Starting point x-axis.
+        y (int): Starting point y-axis.
+        length (int): Recursion length.
+        d (int): Beginning index phenotype.
+        dx (np.array): Phenotype x-axis.
+        dy (np.array): Phenotype y-axis.
+    """
     if d < 0:
         d += 8
     elif d >= 8:
@@ -22,81 +34,116 @@ def show_phenotype(x, y, length, d, dx, dy, ax):
         x_new = x + length * dx[d]
         y_new = y + length * dy[d]
         draw_line(ax, x, y, x_new, y_new)
-        show_phenotype(x_new, y_new, length - 1, d - 1, dx, dy, ax)
-        show_phenotype(x_new, y_new, length - 1, d + 1, dx, dy, ax)
+        show_phenotype(ax, x_new, y_new, length - 1, d - 1, dx, dy)
+        show_phenotype(ax, x_new, y_new, length - 1, d + 1, dx, dy)
 
 
-def gene_to_phenotype(gene):
+def genome_to_phenotype(genome):
+    """
+    Generates the phenotype dx and dy for a given gene.
+
+    Args:
+        gene (np.array): Genome of the biomorph.
+
+    Returns:
+        tuple: Recursion length, phenotype dx and phenotype dy
+    """
     # Get points in the x-axis
     dx = np.zeros((8, ))
-    dx[0] = - gene[1]
-    dx[1] = - gene[0]
-    dx[3] = gene[0]
-    dx[4] = gene[1]
-    dx[5] = gene[2]
-    dx[7] = - gene[2]
+    dx[0] = - genome[1]
+    dx[1] = - genome[0]
+    dx[3] = genome[0]
+    dx[4] = genome[1]
+    dx[5] = genome[2]
+    dx[7] = - genome[2]
 
     # Get points in the y-axis
     dy = np.zeros((8, ))
-    dy[0] = gene[5]
-    dy[1] = gene[4]
-    dy[2] = gene[3]
-    dy[3] = gene[4]
-    dy[4] = gene[5]
-    dy[5] = gene[6]
-    dy[6] = gene[7]
-    dy[7] = gene[6]
+    dy[0] = genome[5]
+    dy[1] = genome[4]
+    dy[2] = genome[3]
+    dy[3] = genome[4]
+    dy[4] = genome[5]
+    dy[5] = genome[6]
+    dy[6] = genome[7]
+    dy[7] = genome[6]
 
     # Get length of recursion
-    length = gene[8]
+    length = genome[8]
 
     return length, dx, dy
 
 
 def draw_line(ax, x, y, x_new, y_new):
+    """
+    Draws biomorph line.
+
+    Args:
+        ax (matplotlib.axes): Figure axis to display the phenotype.
+        x (int): Starting point x-axis.
+        y (int): Starting point y-axis.
+        x_new (int): Next point x-axis.
+        y_new (int): Next point y-axis.
+    """
     ax.plot([x, x_new], [y, y_new], 'k')
 
 
-def initialize_random_gene():
-    gene = np.zeros((9, ))
-    gene[:-1] = np.random.randint(2 * MAX, size=(8, )) - MAX  # Between [-MAX, MAX]
-    gene[-1] = 1
-    return gene
+def initialize_random_genome():
+    """
+    Creates a random genome for a biomorph.
+
+    Returns:
+        np.array: Genome with 9 different genes.
+    """
+    genome = np.zeros((9, ))
+    genome[:-1] = np.random.randint(2 * MAX, size=(8, )) - MAX  # Between [-MAX, MAX]
+    genome[-1] = 1
+    return genome
 
 
-def mutate_gene(gene):
-    mutated_gene = gene.copy()
-    idx = np.random.randint(9)
+def mutate_genome(genome):
+    """
+    Changes one gene from the genome.
+
+    Args:
+        gene (np.array): Genome with 9 different genes.
+
+    Returns:
+        np.array: Genome with one gene mutated.
+    """
+    mutated_genome = genome.copy()
+    gene = np.random.randint(9)
     if np.random.random() > 0.5:
-        if idx == 8 and mutated_gene[idx] < MAX_LEN:  # Prevent recursion depth to be large
-            mutated_gene[idx] += 1
+        if gene == 8 and mutated_genome[gene] < MAX_LEN:  # Prevent recursion depth to be large
+            mutated_genome[gene] += 1
     else:
-        if idx != 8:
-            mutated_gene[idx] -= 1
-    return mutated_gene
+        if gene != 8:
+            mutated_genome[gene] -= 1
+    return mutated_genome
 
 
 def main():
+    """ Run the biomorph mutation. """
     np.random.seed(4321)
     if os.path.isdir('biomorphs'):
         shutil.rmtree('biomorphs')
     os.mkdir('biomorphs')
     num_generations = 1000
-    gene = initialize_random_gene()
-    length, dx, dy = gene_to_phenotype(gene)
+    gene = initialize_random_genome()
+    length, dx, dy = genome_to_phenotype(gene)
 
     f = plt.figure(figsize=(4, 4))
     ax = plt.gca()
-    show_phenotype(X, Y, length, DIR, dx, dy, ax)
+    show_phenotype(ax, X, Y, length, DIR, dx, dy)
     ax.set_title('Generation 0')
     plt.axis('off')
     f.savefig(f'biomorphs/{0:04d}.png')
-    
+
     for i in tqdm(range(1, num_generations + 1)):
         ax.cla()
-        gene = mutate_gene(gene)
-        length, dx, dy = gene_to_phenotype(gene)
-        show_phenotype(X, Y, length, DIR, dx, dy, ax)
+        gene = mutate_genome(gene)
+        length, dx, dy = genome_to_phenotype(gene)
+        show_phenotype(ax, X, Y, length, DIR, dx, dy)
         ax.set_title(f'Generation {i}')
         plt.axis('off')
         f.savefig(f'biomorphs/{i:04d}.png')
