@@ -1,16 +1,8 @@
-import os
-import shutil
-
 import numpy as np
-import matplotlib.pyplot as plt
-from tqdm import tqdm
 
 
-MAX = 100
 MAX_LEN = 9
-DIR = 2
-X = 0
-Y = 0
+MAX = 100
 
 
 def show_phenotype(ax, x, y, length, d, dx, dy):
@@ -120,34 +112,3 @@ def mutate_genome(genome):
         if gene != 8:
             mutated_genome[gene] -= 1
     return mutated_genome
-
-
-def main():
-    """ Run the biomorph mutation. """
-    np.random.seed(4321)
-    if os.path.isdir('biomorphs'):
-        shutil.rmtree('biomorphs')
-    os.mkdir('biomorphs')
-    num_generations = 1000
-    gene = initialize_random_genome()
-    length, dx, dy = genome_to_phenotype(gene)
-
-    f = plt.figure(figsize=(4, 4))
-    ax = plt.gca()
-    show_phenotype(ax, X, Y, length, DIR, dx, dy)
-    ax.set_title('Generation 0')
-    plt.axis('off')
-    f.savefig(f'biomorphs/{0:04d}.png')
-
-    for i in tqdm(range(1, num_generations + 1)):
-        ax.cla()
-        gene = mutate_genome(gene)
-        length, dx, dy = genome_to_phenotype(gene)
-        show_phenotype(ax, X, Y, length, DIR, dx, dy)
-        ax.set_title(f'Generation {i}')
-        plt.axis('off')
-        f.savefig(f'biomorphs/{i:04d}.png')
-
-
-if __name__ == '__main__':
-    main()
