@@ -33,7 +33,7 @@ conda activate biomorph-mutation
 Run the algorithm from the command line with:
 
 ```python
-python biomorph_mutation.py
+python -m biomorph_mutation
 ```
 
 Biomorphs will be saved in a generated directory named `biomorphs`.
